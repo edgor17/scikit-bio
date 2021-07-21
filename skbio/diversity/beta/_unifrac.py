@@ -358,7 +358,7 @@ def _unweighted_unifrac(u_node_counts, v_node_counts, branch_lengths):
 
 
 def _weighted_unifrac(u_node_counts, v_node_counts, u_total_count,
-                      v_total_count, branch_lengths):
+                      v_total_count, branch_lengths, euf):
     """
     Parameters
     ----------
@@ -400,10 +400,11 @@ def _weighted_unifrac(u_node_counts, v_node_counts, u_total_count,
 
     wu = (branch_lengths *
           np.absolute(u_node_proportions - v_node_proportions)).sum()
-    ewu= (branch_lengths *
+    if euf==1:
+        wu= (branch_lengths *
           np.square(u_node_proportions - v_node_proportions)).sum()
-    ewu=np.sqrt(ewu)
-    return ewu, wu, u_node_proportions, v_node_proportions
+        wu=np.sqrt(ewu)
+    return  wu, u_node_proportions, v_node_proportions
 
 
 def _weighted_unifrac_normalized(u_node_counts, v_node_counts, u_total_count,
@@ -493,7 +494,7 @@ def _setup_multiple_unweighted_unifrac(counts, otu_ids, tree, validate):
 
 
 def _setup_multiple_weighted_unifrac(counts, otu_ids, tree, normalized,
-                                     validate):
+                                     validate,euf):
     """ Create optimized pdist-compatible weighted UniFrac function
 
     Parameters
@@ -542,7 +543,7 @@ def _setup_multiple_weighted_unifrac(counts, otu_ids, tree, normalized,
             v_total_count = np.take(v_node_counts, tip_indices).sum()
             u, _, _ = _weighted_unifrac(u_node_counts, v_node_counts,
                                         u_total_count, v_total_count,
-                                        branch_lengths)
+                                        branch_lengths, euf)
             return u
 
     return f, counts_by_node

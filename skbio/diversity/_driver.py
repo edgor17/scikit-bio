@@ -260,6 +260,16 @@ def partial_beta_diversity(metric, counts, ids, id_pairs, validate=True,
             counts, otu_ids=otu_ids, tree=tree, normalized=normalized,
             validate=validate)
         counts = counts_by_node
+    elif metric == 'weighted_Eucunifrac':
+        # get the value for normalized. if it was not provided, it will fall
+        # back to the default value inside of _weighted_unifrac_pdist_f
+        normalized = kwargs.pop('normalized',
+                                _normalize_weighted_unifrac_by_default)
+        otu_ids, tree, kwargs = _get_phylogenetic_kwargs(counts, **kwargs)
+        metric, counts_by_node = _setup_multiple_weighted_unifrac(
+            counts, otu_ids=otu_ids, tree=tree, normalized=normalized,
+            validate=validate,euf=1)
+        counts = counts_by_node
     elif callable(metric):
         metric = functools.partial(metric, **kwargs)
         # remove all values from kwargs, since they have already been provided
@@ -354,7 +364,7 @@ def beta_diversity(metric, counts, ids=None, validate=True, pairwise_func=None,
         metric, counts_by_node = _setup_multiple_unweighted_unifrac(
             counts, otu_ids=otu_ids, tree=tree, validate=validate)
         counts = counts_by_node
-    elif metric == 'weighted_unifrac':
+     elif metric == 'weighted_unifrac':
         # get the value for normalized. if it was not provided, it will fall
         # back to the default value inside of _weighted_unifrac_pdist_f
         normalized = kwargs.pop('normalized',
@@ -362,7 +372,17 @@ def beta_diversity(metric, counts, ids=None, validate=True, pairwise_func=None,
         otu_ids, tree, kwargs = _get_phylogenetic_kwargs(counts, **kwargs)
         metric, counts_by_node = _setup_multiple_weighted_unifrac(
             counts, otu_ids=otu_ids, tree=tree, normalized=normalized,
-            validate=validate)
+            validate=validate,euf=0)
+        counts = counts_by_node
+    elif metric == 'weighted_Eucunifrac':
+        # get the value for normalized. if it was not provided, it will fall
+        # back to the default value inside of _weighted_unifrac_pdist_f
+        normalized = kwargs.pop('normalized',
+                                _normalize_weighted_unifrac_by_default)
+        otu_ids, tree, kwargs = _get_phylogenetic_kwargs(counts, **kwargs)
+        metric, counts_by_node = _setup_multiple_weighted_unifrac(
+            counts, otu_ids=otu_ids, tree=tree, normalized=normalized,
+            validate=validate,euf=1)
         counts = counts_by_node
     elif callable(metric):
         metric = functools.partial(metric, **kwargs)

@@ -400,10 +400,10 @@ def _weighted_unifrac(u_node_counts, v_node_counts, u_total_count,
 
     wu = (branch_lengths *
           np.absolute(u_node_proportions - v_node_proportions)).sum()
-    Ewu= (branch_lengths *
+    ewu= (branch_lengths *
           np.square(u_node_proportions - v_node_proportions)).sum()
-    Ewu=np.sqrt(Ewu)
-    return Ewu, wu, u_node_proportions, v_node_proportions
+    ewu=np.sqrt(ewu)
+    return ewu, wu, u_node_proportions, v_node_proportions
 
 
 def _weighted_unifrac_normalized(u_node_counts, v_node_counts, u_total_count,
